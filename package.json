@@ -1,0 +1,63 @@
+{
+  "name": "NDExNetworks",
+  "version": "v0.0.0",
+  "description": "A CyStore for NDEx Networks.",
+  "scripts": {
+    "build": "webpack --progress --colors",
+    "clean": "rm build/app.js",
+    "lint": "eslint src/; exit 0",
+    "test": "eslint src/ && jest",
+    "coverage": "jest --coverage"
+  },
+  "main": "build/finder.js",
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/.preprocessor.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyComponent/CyStoreScaffold.git"
+  },
+  "keywords": [],
+  "author": "Eric Sage",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cyComponent/CyStoreScaffold/issues"
+  },
+  "homepage": "",
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": "eslint:recommended",
+    "ecmaFeatures": {
+      "modules": true
+    },
+    "env": {
+      "es6": true,
+      "browser": true
+    }
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "dependencies": {
+    "immutable": "^3.7.6",
+    "redux": "^3.5.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-eslint": "^4.1.8",
+    "babel-jest": "^6.0.1",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.5.0",
+    "css-loader": "^0.23.0",
+    "eslint": "^2.0.0",
+    "file-loader": "^0.8.5",
+    "jest-cli": "^0.8.2",
+    "jest-webpack-alias": "^2.0.0",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.13"
+  }
+}
