@@ -1,17 +1,19 @@
 var path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, "src/CyRestStore.js"),
+  cache: 'true',
+  devtool: 'source-map',
+  entry: path.resolve(__dirname, "src/NDExStore.js"),
   output: {
     path: path.resolve(__dirname, "build"),
-    library: "CyRestStore",
+    library: "NDExStore",
     libraryTarget: "umd",
-    filename: "CyRestStore.js",
+    filename: "NDExStore.js",
   },
   resolve: {
     root: __dirname,
     moduleDirectories: ["node_modules", "./src"],
-    extensions: ["", ".js", ".webpack.js", ".css", ".scss"]
+    extensions: ["", ".js", ".webpack.js"]
   },
   module: {
     loaders: [
@@ -19,16 +21,6 @@ module.exports = {
         test: /\.js?$/,
         exclude: /node_modules/,
         loaders: ['babel?presets[]=es2015']
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        loaders: ["style", "css", "sass"]
-      },
-      {
-        test: /\.(png|jpg|jpeg|svg)$/,
-        exclude: /node_modules/,
-        loaders: ["url"]
       }
     ]
   }
