@@ -7,32 +7,45 @@
 
 import { Map, Set } from 'immutable'
 
+const SET_SERVER = "SET_SERVER"
 const LOGIN = "LOGIN"
 const LOGOUT = "LOGOUT"
 
 const defaultState = Map({
-  name: "",
-  pass: "",
+  serverName: "Public NDEx",
+  serverAddress: "http://public.ndexbio.org",
+  userName: "",
+  userPass: "",
   loggedIn: false
 })
 
-export default function credentialsState(state = defaultState, action) {
+export default function serverState(state = defaultState, action) {
     switch(action.type) {
+      case SET_SERVER:
+        return state.merge({
+          serverName: action.name,
+          serverAddress: action.address
+        })
       case LOGIN:
         return state.merge({
-          name: action.name,
-          pass: action.pass,
+          userName: action.name,
+          userPass: action.pass,
           loggedIn: true
         })
       case LOGOUT:
         return state.merge({
-          name: "",
-          pass: "",
+          userName: "",
+          userPass: "",
           loggedIn: false
         })
       default:
         return state
     }
+}
+
+/* Set Ndex server */
+export function setServer(name, address) {
+  return { type: SET_SERVER, name, address }
 }
 
 /* Login to Ndex */
@@ -44,4 +57,3 @@ export function login(name, pass) {
 export function logout() {
   return { type: LOGOUT }
 }
-

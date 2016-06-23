@@ -54,9 +54,9 @@ export function searchError(error) {
   return { type: SEARCH_ERROR, error }
 }
 
-export function searchFor(query, resultSize = 50) {
+export function searchFor(address, query, resultSize = 50) {
   return dispatch =>
-    fetch('http://dev2.ndexbio.org/rest/network/search/0/' + resultSize, {
+    fetch(address + '/rest/network/search/0/' + resultSize, {
       method: 'post',
       headers: {
         'Accept': 'application/json',
