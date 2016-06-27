@@ -54,9 +54,9 @@ export function searchError(error) {
   return { type: SEARCH_ERROR, error }
 }
 
-export function searchFor(address, query, resultSize = 50) {
+export function searchFor(server, query, resultSize = 50) {
   return dispatch =>
-    fetch(address + '/rest/network/search/0/' + resultSize, {
+    fetch(server.serverAddress + '/rest/network/search/0/' + resultSize, {
       method: 'post',
       headers: {
         'Accept': 'application/json',
