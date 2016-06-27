@@ -55,13 +55,17 @@ export function searchError(error) {
 }
 
 export function searchFor(server, query, resultSize = 50) {
+  var headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+  if (server.loggedIn) {
+    headers['Authorization'] = 'Basic ' + btoa(server.userName + ':' + server.userPass)
+  }
   return dispatch =>
     fetch(server.serverAddress + '/rest/network/search/0/' + resultSize, {
       method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+      headers: headers,
       body: JSON.stringify({searchString: query})
     }).then(response => {
       if (response.status >= 200 && response.status < 300) {
@@ -73,6 +77,6 @@ export function searchFor(server, query, resultSize = 50) {
         throw error
       }
     }).catch(error => {
-      console.log('NDEx lucene Search failed', error)
+      window.alert('NDEx lucene Search failed, reason:', error)
     })
 }
