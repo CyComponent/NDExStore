@@ -12,7 +12,7 @@ __CyStore Registered Name:__ ndex
 __Sample Usage__
 > ```javascript
   var cyto = CyFramework.config([NDExStore])
-  cyto.dispatch(NDExStore.searchFor('brc1')
+  cyto.dispatch(NDExStore.luceneActions.searchFor('brc1')
   var state = cyto.store('ndex')
   console.log(state.lucene.get('networks'))
 ```
