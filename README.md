@@ -1,31 +1,90 @@
 
-React Redux Scaffold
-====================
-A react and redux scaffold
+NDExStore
+===
+> The NDExStore provides storage and interactions with an NDEx server. The NDExStore contains a lucene store with actions for querying the NDEx repository for networks given a list of search terms. It also contains a server store that contains information about the server and login information. Actions on the server store can change the NDEx target and log in and log out a user.
 
-####Contains:
-- React
-- Redux
-- Webpack
-- Babel
-- ESLint
-- Jest
-- Sass
-- Dockerfile
-- Travis
+__CyStore Library Name:__ NDExStore
+> ######  Note: A CyStore's library name appears in npm, and is the name used for importing the CyStore as a library.
 
-Getting Started
----------------
-The package.json containers blank fields specific to a project. Customize lint rules in the `eslintConfig` section. Build an app by replacing the empty container and component and add reducers and reducer actions. Install Redux and React Chrome extensions for application introspection.
+__CyStore Registered Name:__ ndex
+> ######  Note: The CyStore's registered name appears when it's initialized with the CyFramework in the CyFramework's data model.
 
-Commands
---------
+__Sample Usage__
+> ```javascript
+  var cyto = CyFramework.config([NDExStore])
+  cyto.dispatch(NDExStore.searchFor('brc1')
+  var state = cyto.store('ndex')
+  console.log(state.lucene.get('networks'))
 ```
-npm run dev - Run app on localhost, port 8080
-npm run serve - Serve the app oover all interfaces on port 8080
-npm run build - Build the app into /build/app.js
-npm run clean - Remove the /build/app.js
-npm run lint - Run eslint, will not cause npm to exit with an error
-npm run test - Run eslint followed by jest, may cause npm to exit with an error (for travis)
-npm run coverage - Run jest's coverage tool
+
+lucene
+---
+> The lucene store is an immutablejs map. The lucene store has a flag indicating whether the client is still searching fo networks (for displaying a spinner, etc). It also containers an error that is filled if the search fails, and a list of networks that contain the results of the previous search.
+
+__Data model__
+> ```javascript
+  lucene: Map({
+    searching: false,
+    networkSummaries: Set(),
+    error: null
+  })
 ```
+
+### Action Creators
+
+__Registed Name:__ luceneActions
+> The object under which the action creators are exported under. 
+
+#### searchBegin()
+> Sets the searching flag to true, use before beginning a search with searchFor/3
+
+#### searchError(error)
+> Called from searchFor/3, not normally used elsewhere, sets the error field with the value of error.
+>
+> __Params__
+> - error: An error object that can be inspected to see the error reason of a failed lucene search.
+
+#### seachFor(server, query, resultSize)
+> Begins a lucene search agains the server with a query string, this search will either update networkSummaries or error, depending on the outcome of the search. Either way, it will then flip the searching flag to false.
+>
+> __Params__
+> - server: A string, usually taken from the server store to reflect the store's choice of server.
+> - query: A string, the lucene query to search against NDEx. 
+> - resultSize(OPTIONAL): Default of 50, setting this to a high value will incease the searchTime. This is the max number of results returned by the lucene search.
+
+server
+---
+> The server store is an immutable map. It containers information about the NDEx server to be used, the username and password, and the log in state of the user. If loggedIn is false, th userName and userPass fields are considered garbage. Actions allow setting the server name and address, and logging the user in and out.
+
+__Data model__
+> ```javascript
+  lucene: Map({
+    serverName: "Public NDEx",
+    serverAddress: "http://public.ndexbio.org",
+    userName: "",
+    userPass: "",
+    loggedIn: false
+  })
+```
+
+### Action Creators
+
+__Registed Name:__ serverActions
+> The object under which the action creators are exported under. 
+
+#### setServer(name, address)
+> Set the server name and address.
+>
+> __Params__
+> - name: A string, a human readable identifier for the server.
+> - address: The url of the NDEx server.
+
+#### login(name, pass)
+> Sets loggedIn to true, and adds the users credentials (unencrypted).
+>
+> __Params__
+> - name: The user's NDEx username
+> - pass: The user's NDEx password 
+
+#### logout()
+> Sets the loggedIn flag to false.
