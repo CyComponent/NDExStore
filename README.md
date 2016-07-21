@@ -11,9 +11,13 @@ __CyStore Registered Name:__ ndex
 
 __Sample Usage__
 > ```javascript
+  #Create an instance of the CyFramework using the factory method config, pass in the CyStore dependancy list.
   var cyto = CyFramework.config([NDExStore])
+  #Dispatch an action to the CyFramework, in this case, we are starting a lucene search for 'brc1'
   cyto.dispatch(NDExStore.luceneActions.searchFor('brc1')
+  #Get the state of store 'ndex'. This is the data model associated with the NDExStore CyStore.
   var state = cyto.store('ndex')
+  #Get the list of networks returned from the lucene search, we use .get() because lucene is an immutablejs map.
   console.log(state.lucene.get('networks'))
 ```
 
