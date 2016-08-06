@@ -1,14 +1,18 @@
 import { combineReducers } from 'redux'
 
-import lucene, * as luceneActions from './store/lucene'
 import server, * as serverActions from './store/server'
+import users, * as userActions from './store/users'
+import groups, * as groupActions from './store/groups'
+import networks, * as networkActions from './store/networks'
 
 const storeName = 'ndex'
-const store =  { lucene, server }
+const store =  { server, users, groups, networks }
 
 export {
-  storeName,
   store,
-  luceneActions,
-  serverActions
+  storeName,
+  serverActions,
+  userActions,
+  groupActions,
+  networkActions
 }
