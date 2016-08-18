@@ -52,16 +52,16 @@ export function search(query, resultSize=50) {
 //TODO: Refactor this function out in the future
 function ndexSearch(type, query, resultSize) {
   return (dispatch, getState) => {
-    var headers = {}
+    var postHeaders = {}
+    postHeaders['Accept'] = 'application/json'
+    postHeaders['Content-Type'] = 'application/json'
     const server = getState().ndex.server.toJS()
     if (server.loggedIn) {
-      headers['Authorization'] = 'Basic ' + btoa(server.userName + ':' + server.userPass)
+      postHeaders['Authorization'] = 'Basic ' + btoa(server.userName + ':' + server.userPass)
     }
-    headers['Accept'] = 'application/json'
-    headers['Content-Type'] = 'application/json'
     fetch(server.serverAddress + '/rest/' + type + '/search/0/' + resultSize, {
       method: 'post',
-      headers: headers,
+      headers: postHeaders,
       body: JSON.stringify({searchString: query})
     }).then(response => {
       return response.json()
