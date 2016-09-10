@@ -1,7 +1,7 @@
 {
   "name": "ndex-store",
   "author": "Eric Sage",
-  "version": "v0.0.2",
+  "version": "v0.0.4",
   "description": "A CyStore for NDEx Networks.",
   "license": "MIT",
   "keywords": [],

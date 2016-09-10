@@ -35,6 +35,8 @@ export function replace(summaries) {
   return {
     type: REPLACE,
     summaries: summaries.reduce(function(Sums, S) {
+      S.modificationTime = convertTime(S.modificationTime)
+      S.creationTime = convertTime(S.creationTime)
       Sums[S.externalId] = S
       return Sums
     }, {})
@@ -49,7 +51,6 @@ export function search(query, resultSize=50) {
   return ndexSearch('network', query, resultSize)
 }
 
-//TODO: Refactor this function out in the future
 function ndexSearch(type, query, resultSize) {
   return (dispatch, getState) => {
     var postHeaders = {}
@@ -70,4 +71,10 @@ function ndexSearch(type, query, resultSize) {
       dispatch(replace(summaries))
     }).catch(e => console.log(e))
   }
+}
+
+function convertTime(T) {
+  var d = new Date(0)
+  d.setUTCSeconds(T/1000.0)
+  return d.toLocaleDateString()
 }

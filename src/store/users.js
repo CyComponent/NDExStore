@@ -1,6 +1,5 @@
 
 import { Map } from 'immutable'
-import { ndexSearch } from '../ndex_search'
 
 const ADD = "ndex/users/ADD"
 const REMOVE = "ndex/users/REMOVE"
@@ -36,6 +35,8 @@ export function replace(summaries) {
   return {
     type: REPLACE,
     summaries: summaries.reduce(function(Sums, S) {
+      S.modificationTime = convertTime(S.modificationTime)
+      S.creationTime = convertTime(S.creationTime)
       Sums[S.externalId] = S
       return Sums
     }, {})
@@ -47,5 +48,33 @@ export function clear() {
 }
 
 export function search(query, resultSize=50) {
-  return ndexSearch('user', query, resultSize, this)
+  return serverSearch('user', query, resultSize)
+}
+
+function serverSearch(type, query, resultSize) {
+  return (dispatch, getState) => {
+    var postHeaders = {}
+    postHeaders['Accept'] = 'application/json'
+    postHeaders['Content-Type'] = 'application/json'
+    const server = getState().ndex.server.toJS()
+    if (server.loggedIn) {
+      postHeaders['Authorization'] = 'Basic ' + btoa(server.userName + ':' + server.userPass)
+    }
+    fetch(server.serverAddress + '/rest/' + type + '/search/0/' + resultSize, {
+      method: 'post',
+      headers: postHeaders,
+      body: JSON.stringify({searchString: query})
+    }).then(response => {
+      return response.json()
+    }).then(summaries => {
+      dispatch(clear())
+      dispatch(replace(summaries))
+    }).catch(e => console.log(e))
+  }
+}
+
+function convertTime(T) {
+  var d = new Date(0)
+  d.setUTCSeconds(T/1000.0)
+  return d.toLocaleDateString()
 }
