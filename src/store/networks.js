@@ -32,6 +32,9 @@ export function remove(id) {
 }
 
 export function replace(summaries) {
+  console.log(
+    "Calling new summaries"
+  )
   return {
     type: REPLACE,
     summaries: summaries.reduce(function(Sums, S) {
