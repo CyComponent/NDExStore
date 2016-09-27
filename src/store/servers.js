@@ -41,7 +41,7 @@ export default function serverState(state = defaultState, action) {
 }
 
 /* Add Ndex server */
-export function addServer(serverId, address, name, pass) {
+export function add(serverId, address, name, pass) {
   return {
     type: ADD,
     serverId,
@@ -52,6 +52,6 @@ export function addServer(serverId, address, name, pass) {
 }
 
 /* Remove NDEx server */
-export function removeServer(serverId) {
+export function remove(serverId) {
   return { type: REMOVE, serverId }
 }
