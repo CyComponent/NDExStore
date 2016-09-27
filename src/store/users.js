@@ -1,5 +1,6 @@
 
 import { Map } from 'immutable'
+import SearchService from '../service/search_service.js'
 
 const ADD = "ndex/users/ADD"
 const REMOVE = "ndex/users/REMOVE"
@@ -47,30 +48,9 @@ export function clear() {
   return { type: CLEAR }
 }
 
-export function search(query, resultSize=50) {
-  return serverSearch('user', query, resultSize)
-}
-
-function serverSearch(type, query, resultSize) {
-  return (dispatch, getState) => {
-    var postHeaders = {}
-    postHeaders['Accept'] = 'application/json'
-    postHeaders['Content-Type'] = 'application/json'
-    const server = getState().ndex.server.toJS()
-    if (server.loggedIn) {
-      postHeaders['Authorization'] = 'Basic ' + btoa(server.userName + ':' + server.userPass)
-    }
-    fetch(server.serverAddress + '/rest/' + type + '/search/0/' + resultSize, {
-      method: 'post',
-      headers: postHeaders,
-      body: JSON.stringify({searchString: query})
-    }).then(response => {
-      return response.json()
-    }).then(summaries => {
-      dispatch(clear())
-      dispatch(replace(summaries))
-    }).catch(e => console.log(e))
-  }
+export function search(query) {
+  var searchService = new SearchService('user')
+  return searchService.search(query)
 }
 
 function convertTime(T) {

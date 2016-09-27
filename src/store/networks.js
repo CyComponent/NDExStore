@@ -1,5 +1,6 @@
 
 import { Map } from 'immutable'
+import SearchService from '../service/search_service.js'
 
 const ADD = "ndex/networks/ADD"
 const REMOVE = "ndex/networks/REMOVE"
@@ -32,9 +33,6 @@ export function remove(id) {
 }
 
 export function replace(summaries) {
-  console.log(
-    "Calling new summaries"
-  )
   return {
     type: REPLACE,
     summaries: summaries.reduce(function(Sums, S) {
@@ -50,30 +48,9 @@ export function clear() {
   return { type: CLEAR }
 }
 
-export function search(query, resultSize=50) {
-  return ndexSearch('network', query, resultSize)
-}
-
-function ndexSearch(type, query, resultSize) {
-  return (dispatch, getState) => {
-    var postHeaders = {}
-    postHeaders['Accept'] = 'application/json'
-    postHeaders['Content-Type'] = 'application/json'
-    const server = getState().ndex.server.toJS()
-    if (server.loggedIn) {
-      postHeaders['Authorization'] = 'Basic ' + btoa(server.userName + ':' + server.userPass)
-    }
-    fetch(server.serverAddress + '/rest/' + type + '/search/0/' + resultSize, {
-      method: 'post',
-      headers: postHeaders,
-      body: JSON.stringify({searchString: query})
-    }).then(response => {
-      return response.json()
-    }).then(summaries => {
-      dispatch(clear())
-      dispatch(replace(summaries))
-    }).catch(e => console.log(e))
-  }
+export function search(query) {
+  var searchService = new SearchService('network')
+  return searchService.search(query)
 }
 
 function convertTime(T) {
