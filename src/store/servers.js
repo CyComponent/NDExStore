@@ -26,7 +26,7 @@ export default function serverState(state = defaultState, action) {
         return state.set(
           action.serverId,
           {
-            address: action.serverAddress,
+            address: action.address,
             login: {
               name: action.name,
               pass: action.pass
