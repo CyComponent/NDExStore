@@ -13,9 +13,10 @@ const REMOVE = "ndex/servers/REMOVE"
 const defaultState = Map({
   'NDEx Public': {
     address: 'http://public.ndexbio.org',
+    version: 'v1',
     login: {
-      name: "",
-      pass: ""
+      name: '',
+      pass: ''
     }
   }
 })
@@ -27,6 +28,7 @@ export default function serverState(state = defaultState, action) {
           action.serverId,
           {
             address: action.address,
+            version: action.version,
             login: {
               name: action.name,
               pass: action.pass
@@ -41,11 +43,12 @@ export default function serverState(state = defaultState, action) {
 }
 
 /* Add Ndex server */
-export function add(serverId, address, name, pass) {
+export function add_action(serverId, address, version, name, pass) {
   return {
     type: ADD,
     serverId,
     address,
+    version,
     name,
     pass
   }
@@ -54,4 +57,21 @@ export function add(serverId, address, name, pass) {
 /* Remove NDEx server */
 export function remove(serverId) {
   return { type: REMOVE, serverId }
+}
+
+export function add(serverId, address, name, pass) {
+  return (dispatch, getState) => {
+    fetch(address + '/rest/admin/status', {
+      methind: 'get',
+      headers: { 'Content-Type': 'applicaiton/json' }
+    }).then(response => {
+      return response.json()
+    }).then(serverStatus => {
+      if (serverStatus.properties.ServerVersion) {
+        dispatch(add_action(serverId, address, "v2", name, pass))
+      } else {
+        dispatch(add_action(serverId, address, "v1", name, pass))
+      }
+    })
+  }
 }
