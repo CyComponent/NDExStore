@@ -29,17 +29,26 @@ export default class SearchService {
 
   search(query) {
     return (dispatch, getState) => {
-      var postHeaders = {}
-      postHeaders['Accept'] = 'application/json'
-      postHeaders['Content-Type'] = 'application/json'
+      var headers = {}
+      headers['Accept'] = 'application/json'
+      headers['Content-Type'] = 'application/json'
       const settings = getState().ndex.settings
       const server = getState().ndex.servers.get(settings.get('server'))
       if (server.login.name) {
-        postHeaders['Authorization'] = 'Basic ' + btoa(server.login.name + ':' + server.login.pass)
+        headers['Authorization'] = 'Basic ' + btoa(server.login.name + ':' + server.login.pass)
       }
-      fetch(server.address + '/rest/' + this.entityType + '/search/0/' + settings.get('resultSize'), {
+      if (server.version = "v1") {
+        v1Fetch(server, headers, query)
+      } else {
+        v2Fetch(server, headers, query)
+      }
+    }
+  }
+  
+  v1Fetch(server, headers, query) {
+     fetch(server.address + '/rest/' + this.entityType + '/search/0/' + settings.get('resultSize'), {
         method: 'post',
-        headers: postHeaders,
+        headers: headers,
         body: JSON.stringify({searchString: query})
       }).then(response => {
         return response.json()
@@ -47,7 +56,19 @@ export default class SearchService {
         dispatch(this.clear())
         dispatch(this.replace(this.format(summaries)))
       }).catch(e => console.log(e))
-    }
+  }
+  
+  v2Fetch(server, headers, query) {
+    fetch(server.address + '/v2/search/' + this.entityType, {
+        method: 'post',
+        headers: headers,
+        body: JSON.stringify({searchString: query})
+      }).then(response => {
+        return response.json()
+      }).then(summaries => {
+        dispatch(this.clear())
+        dispatch(this.replace(this.format(summaries.networks)))
+      }).catch(e => console.log(e))
   }
 
   convertTime(T) {
